@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "rprintf.h"
 #include "serial.h"
+#include "page.h"
 
 // Function to clear the BSS segment
 void clear_bss(void) {
@@ -23,6 +24,8 @@ int getEL(void) {
 }
 
 void kernel_main(void) {
+
+	init_pfa_list();
 
     esp_printf(putc, "Current Execution Level is %d\r\n", getEL());
 
