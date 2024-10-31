@@ -15,6 +15,9 @@ SDIR = src
 OBJS = \
 	boot.o \
 	kernel_main.o \
+	serial.o \
+	rprintf.o \
+	mmu.o \
 
 
 
@@ -25,6 +28,7 @@ $(ODIR)/%.o: $(SDIR)/%.c
 
 $(ODIR)/%.o: $(SDIR)/%.s
 	$(CC) $(CFLAGS) -c -g -o $@ $^
+	$(CC) $(CFLAGS) -c -g -o $@ $<
 
 
 all: bin rootfs.img
@@ -44,7 +48,7 @@ clean:
 
 debug:
 	screen -S qemu -d -m qemu-system-aarch64 -machine raspi3b -kernel kernel8.img -hda rootfs.img -S -s -serial null -serial stdio -monitor none -nographic -k en-us 
-	TERM=xterm gdb -x gdb_init_prot_mode.txt && killall qemu-system-aarch64
+	TERM=xterm gdb-multiarch -x gdb_init_prot_mode.txt && killall qemu-system-aarch64
 
 run:
 	qemu-system-aarch64 -machine raspi3b -kernel kernel8.img -hda rootfs.img -serial null -serial stdio -monitor none -nographic -k en-us
@@ -60,5 +64,6 @@ rootfs.img:
 	sudo mkdir -p /mnt/disk/boot/firmware
 	sudo mkdir /mnt/disk/bin
 	sudo mkdir /mnt/disk/etc
+	sudo bash -c "echo test > /mnt/disk/test"
 	sudo umount /mnt/disk
 
